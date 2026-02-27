@@ -13,14 +13,7 @@ import {
   showToast,
 } from "@raycast/api";
 import { useEffect, useMemo, useState } from "react";
-
-const HISTORY_STORAGE_KEY = "text-fillin-history";
-
-type HistoryItem = {
-  id: string;
-  text: string;
-  createdAt: string;
-};
+import { HISTORY_STORAGE_KEY, HistoryItem, loadHistory } from "./history";
 
 export default function Command() {
   const [isLoading, setIsLoading] = useState(true);
@@ -76,7 +69,7 @@ export default function Command() {
     }
 
     setHistory([]);
-    await LocalStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify([]));
+    await LocalStorage.removeItem(HISTORY_STORAGE_KEY);
     await showToast({
       style: Toast.Style.Success,
       title: "History cleared",
@@ -126,27 +119,17 @@ export default function Command() {
       ))}
       {!isLoading && filteredHistory.length === 0 ? (
         <List.EmptyView
-          title="No history yet"
-          description="Submit text from Text Fillin to start building history."
+          title={searchText ? "No matching results" : "No history yet"}
+          description={
+            searchText
+              ? "Try a different keyword."
+              : "Submit text from Text Fillin to start building history."
+          }
           icon={Icon.Text}
         />
       ) : null}
     </List>
   );
-}
-
-async function loadHistory() {
-  const historyRaw = await LocalStorage.getItem<string>(HISTORY_STORAGE_KEY);
-  if (!historyRaw) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(historyRaw) as HistoryItem[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
 }
 
 function firstLine(text: string) {

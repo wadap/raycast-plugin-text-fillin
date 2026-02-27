@@ -8,22 +8,17 @@ import {
   showToast,
   Toast,
 } from "@raycast/api";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { appendHistory } from "./history";
 
 const DRAFT_STORAGE_KEY = "text-fillin-draft";
-const HISTORY_STORAGE_KEY = "text-fillin-history";
-const MAX_HISTORY_ITEMS = 50;
-
-type HistoryItem = {
-  id: string;
-  text: string;
-  createdAt: string;
-};
+const DRAFT_SAVE_DELAY_MS = 300;
 
 export default function Command() {
   const [isLoading, setIsLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [text, setText] = useState("");
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const loadDraft = async () => {
@@ -41,7 +36,18 @@ export default function Command() {
     if (!isReady) {
       return;
     }
-    LocalStorage.setItem(DRAFT_STORAGE_KEY, text);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
+      LocalStorage.setItem(DRAFT_STORAGE_KEY, text);
+    }, DRAFT_SAVE_DELAY_MS);
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [text, isReady]);
 
   const handleSubmit = async () => {
@@ -97,33 +103,4 @@ export default function Command() {
       />
     </Form>
   );
-}
-
-async function appendHistory(text: string) {
-  const historyRaw = await LocalStorage.getItem<string>(HISTORY_STORAGE_KEY);
-  const history = parseHistory(historyRaw);
-  const next: HistoryItem = {
-    id: generateId(),
-    text,
-    createdAt: new Date().toISOString(),
-  };
-  const updated = [next, ...history].slice(0, MAX_HISTORY_ITEMS);
-  await LocalStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updated));
-}
-
-function generateId() {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-function parseHistory(value: string | undefined): HistoryItem[] {
-  if (!value) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(value) as HistoryItem[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
 }
