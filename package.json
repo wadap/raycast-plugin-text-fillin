@@ -3,8 +3,8 @@
   "name": "text-fillin",
   "title": "Text Fillin",
   "description": "Type text in Raycast and paste it into the previously focused app.",
-  "icon": "assets/extension-icon-v2.png",
-  "author": "raycast",
+  "icon": "extension-icon-v2.png",
+  "author": "wadap",
   "categories": [
     "Productivity"
   ],
@@ -15,14 +15,14 @@
       "title": "Text Fillin",
       "description": "Open a temporary editor and fill text into the last focused app.",
       "mode": "view",
-      "icon": "assets/command-icon-template.svg"
+      "icon": "command-icon-v3.png"
     },
     {
       "name": "text-fillin-history",
       "title": "Text Fillin History",
       "description": "Browse, paste, and manage previously submitted text.",
       "mode": "view",
-      "icon": "assets/command-icon-template.svg"
+      "icon": "command-icon-v3.png"
     }
   ],
   "dependencies": {
@@ -41,6 +41,7 @@
     "build": "ray build -e dist -o dist",
     "package": "npm run build && cd dist && zip -r ../text-fillin-dist.zip . -x '*.DS_Store'",
     "dev": "ray develop",
-    "lint": "ray lint"
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
   }
 }

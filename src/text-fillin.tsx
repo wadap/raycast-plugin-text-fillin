@@ -79,7 +79,7 @@ export default function Command() {
       actions={
         <ActionPanel>
           <Action.SubmitForm
-            title="Fill In Text"
+            title="Fill Text"
             onSubmit={handleSubmit}
             shortcut={{ modifiers: ["cmd"], key: "return" }}
           />
