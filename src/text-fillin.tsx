@@ -3,13 +3,16 @@ import {
   ActionPanel,
   Clipboard,
   Form,
+  Icon,
   LocalStorage,
   closeMainWindow,
   showToast,
   Toast,
+  useNavigation,
 } from "@raycast/api";
 import { useEffect, useRef, useState } from "react";
 import { appendHistory } from "./history";
+import { HistoryView } from "./text-fillin-history";
 
 const DRAFT_STORAGE_KEY = "text-fillin-draft";
 const DRAFT_SAVE_DELAY_MS = 300;
@@ -19,6 +22,7 @@ export default function Command() {
   const [isReady, setIsReady] = useState(false);
   const [text, setText] = useState("");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { push } = useNavigation();
 
   useEffect(() => {
     const loadDraft = async () => {
@@ -65,6 +69,7 @@ export default function Command() {
     try {
       setIsLoading(true);
       await appendHistory(normalizedText);
+      setText("");
       await LocalStorage.setItem(DRAFT_STORAGE_KEY, "");
       await closeMainWindow();
       await Clipboard.paste(normalizedText);
@@ -89,6 +94,12 @@ export default function Command() {
             onSubmit={handleSubmit}
             shortcut={{ modifiers: ["cmd"], key: "return" }}
           />
+          <Action
+            title="Show History"
+            icon={Icon.List}
+            shortcut={{ modifiers: ["cmd"], key: "h" }}
+            onAction={() => push(<HistoryView />)}
+          />
         </ActionPanel>
       }
     >
@@ -101,6 +112,7 @@ export default function Command() {
         value={text}
         onChange={setText}
       />
+      <Form.Description text="⌘+Enter: Fill Text  |  ⌘+H: Show History" />
     </Form>
   );
 }

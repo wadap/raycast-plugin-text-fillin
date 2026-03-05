@@ -16,13 +16,6 @@
       "description": "Open a temporary editor and fill text into the last focused app.",
       "mode": "view",
       "icon": "command-icon-v3.png"
-    },
-    {
-      "name": "text-fillin-history",
-      "title": "Text Fillin History",
-      "description": "Browse, paste, and manage previously submitted text.",
-      "mode": "view",
-      "icon": "command-icon-v3.png"
     }
   ],
   "dependencies": {

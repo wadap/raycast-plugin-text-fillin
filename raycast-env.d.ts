@@ -15,14 +15,10 @@ declare type Preferences = ExtensionPreferences
 declare namespace Preferences {
   /** Preferences accessible in the `text-fillin` command */
   export type TextFillin = ExtensionPreferences & {}
-  /** Preferences accessible in the `text-fillin-history` command */
-  export type TextFillinHistory = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
   /** Arguments passed to the `text-fillin` command */
   export type TextFillin = {}
-  /** Arguments passed to the `text-fillin-history` command */
-  export type TextFillinHistory = {}
 }
 

@@ -15,7 +15,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { HISTORY_STORAGE_KEY, HistoryItem, loadHistory } from "./history";
 
-export default function Command() {
+export function HistoryView() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [history, setHistory] = useState<HistoryItem[]>([]);
